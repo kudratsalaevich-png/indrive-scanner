@@ -5,12 +5,11 @@ const instruction = document.getElementById('instruction');
 let currentStep = 'license_front'; 
 let collectedPhotos = {};
 
-// 1. Камерани юқори сифатда (HD) ва мажбурий ишга тушириш
 const constraints = {
     video: {
-        facingMode: "environment", // Орқа камера
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
+        facingMode: "environment", 
+        width: { ideal: 1920 }, // Янада юқорироқ сифат (Full HD)
+        height: { ideal: 1080 }
     },
     audio: false
 };
@@ -18,27 +17,24 @@ const constraints = {
 navigator.mediaDevices.getUserMedia(constraints)
     .then(stream => {
         video.srcObject = stream;
-        // Баъзи телефонларда мажбурий юргизиш
         video.onloadedmetadata = () => {
-            video.play().catch(e => console.log("Камера авто-плей бўлмади:", e));
+            video.play().catch(e => console.log(e));
         };
     })
     .catch(err => {
-        alert("Камерани очиб бўлмади. Рухсатларни текширинг: " + err);
+        alert("Камера хатолиги: " + err);
     });
 
-// 2. Расмга олиш
 captureButton.addEventListener('click', () => {
     const canvas = document.createElement('canvas');
-    // Расм сифати юқори бўлиши учун видеонинг асл ўлчамини оламиз
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
     
     const ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    // Сифатли сурат олиш (JPEG, 0.9 сифат)
-    const photoData = canvas.toDataURL('image/jpeg', 0.9);
+    // Расм сифатини 0.85 қиламиз, бу сервер тезроқ қабул қилиши ва қотмаслигига ёрдам беради
+    const photoData = canvas.toDataURL('image/jpeg', 0.85);
 
     if (currentStep === 'license_front') {
         collectedPhotos.license_front = photoData;
@@ -58,20 +54,24 @@ captureButton.addEventListener('click', () => {
     else if (currentStep === 'passport_back') {
         collectedPhotos.passport_back = photoData;
         
-        // Ҳамма расмлар йиғилди! Маълумотни Telegram-га юборамиз
-        // Нариги бетга ўтиши учун Telegram WebApp нинг махсус функциясини чақирамиз
+        instruction.innerHTML = "⏳ МАЪЛУМОТЛАР ЮБОРЕЛИШМОҚДА, КУТИНГ...";
+        captureButton.style.display = 'none'; // Қайта босмаслик учун тугмани яширамиз
+
+        // Қотиб қолмаслик учун Telegram-га маълумотни хавфсиз юбориш
         if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.sendData(JSON.stringify(collectedPhotos));
-            setTimeout(() => {
-                window.Telegram.WebApp.close(); // Ойнани ёпиш
-            }, 500);
-        } else {
-            alert("Рўйхатдан ўтиш якунланди! (Ботдан ташқарида)");
+            try {
+                window.Telegram.WebApp.sendData(JSON.stringify(collectedPhotos));
+                // Юборилгандан сўнг ойнани мажбурий ёпиш
+                setTimeout(() => {
+                    window.Telegram.WebApp.close();
+                }, 300);
+            } catch (e) {
+                alert("Юборишда хатолик: " + e);
+            }
         }
     }
 });
 
-// Ойнани тўлиқ экран қилиш
 if (window.Telegram && window.Telegram.WebApp) {
     window.Telegram.WebApp.ready();
     window.Telegram.WebApp.expand();
