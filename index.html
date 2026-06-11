@@ -20,67 +20,41 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 2;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: inset 0 0 0 20px rgba(0,0,0,0.6); /* Четларини бироз тўқ қилиш */
+            box-shadow: inset 0 0 0 30px rgba(0,0,0,0.6); 
         }
-        /* Сиз айтган экран четларидан чиқадиган катта Албомний рамка */
+        /* Сиз айтган экран чек-четига тақаладиган катта АЛБОМНИЙ рамка */
         .doc-frame {
-            width: 90vw; height: 58vw; /* Экраннинг 90% қисмини эгаллайди, жуда яқин ва аниқ тушади */
-            max-width: 600px; max-height: 380px;
-            border: 4px solid #00FF00; /* Яшил рамка қалинлашди */
+            width: 90vw; /* Телефон тик турганда ҳам экран энининг 90% қисмини эгаллайди */
+            height: 56vw; /* Пластик карта пропорцияси (яқин ва аниқ тушириш учун) */
+            max-width: 500px; max-height: 310px;
+            border: 4px solid #00FF00; /* Қалин яшил рамка */
             border-radius: 15px;
             box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
             background: transparent;
-            transition: all 0.3s ease;
         }
         .instruction-text {
-            color: #fff; text-align: center; margin-bottom: 15px;
+            color: #fff; text-align: center; margin-bottom: 20px;
             font-size: 14px; font-weight: bold; text-shadow: 2px 2px 6px #000;
-            padding: 0 10px; text-transform: uppercase;
-        }
-        /* Телефон тик (книжний) турганда чиқадиган огоҳлантириш */
-        #rotate-warning {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9); z-index: 10;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; text-align: center; padding: 20px; box-sizing: border-box;
-        }
-        #rotate-warning img {
-            width: 80px; margin-bottom: 20px;
-            animation: rotateAnim 2s infinite ease-in-out;
-        }
-        @keyframes rotateAnim {
-            0% { transform: rotate(0deg); }
-            50% { transform: rotate(-90deg); }
-            100% { transform: rotate(-90deg); }
-        }
-        /* Агар телефон ёнбош (албомний) қилинса, огоҳлантиришни яшириш */
-        @media (orientation: landscape) {
-            #rotate-warning { display: none; }
+            padding: 0 15px; text-transform: uppercase;
         }
         .capture-btn {
-            position: absolute; right: 20px; top: 50%; transform: translateY(-50%); /* Тугма ёнбош ҳолат учун ўнг томонга ўтди */
-            width: 70px; height: 70px; 
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 75px; height: 75px; 
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 50%; border: 6px solid rgba(255,255,255,0.4);
             box-shadow: 0 0 20px rgba(0,0,0,0.6);
             cursor: pointer; z-index: 3;
         }
-        .capture-btn:active { transform: translateY(-50%) scale(0.9); }
+        .capture-btn:active { transform: translateX(-50%) scale(0.9); }
     </style>
 </head>
 <body>
-
-    <div id="rotate-warning">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#00FF00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: rotateAnim 2s infinite;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-        <h2 style="margin-top:20px;">🔄 ТЕЛЕФОННИ ЁНБОШЛАТИНГ (АЛБОМНИЙ)</h2>
-        <p>Ҳужжат аниқ ва яқиндан тушиши учун телефонни горизонтал ҳолатга ўтказинг.</p>
-    </div>
 
     <div id="camera-container">
         <video id="video" autoplay playsinline muted></video>
         
         <div class="scanner-overlay">
-            <div id="instruction" class="instruction-text">🪪 ПРАВАНИНГ ОЛДИ ТОМОНИНИ РАМКАГА ЖОЙЛАШТИРИНГ</div>
+            <div id="instruction" class="instruction-text">🪪 ПРАВАНИНГ ОЛДИ ТОМОНИНИ РАМКАГА ИЧИГА ЖОЙЛАШТИРИНГ</div>
             <div class="doc-frame"></div>
         </div>
 
